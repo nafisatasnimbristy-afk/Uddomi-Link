@@ -41,15 +41,18 @@ function Dashboard() {
         {hasRole('business-owner') && (
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-primary">
-              <h2 className="text-2xl font-bold text-dark mb-4">My Businesses</h2>
-              <p className="text-gray-600 mb-6">Manage your listings and track investors.</p>
-              <button className="bg-primary text-white px-6 py-2 rounded hover:bg-green-800 transition w-full">
-                + Add New Business
-              </button>
+              <h2 className="text-2xl font-bold text-dark mb-4">My Products</h2>
+              <p className="text-gray-600 mb-6">Manage your product listings and inventory.</p>
+              <Link
+                to="/my-products"
+                className="block bg-primary text-white text-center px-6 py-2 rounded hover:bg-green-800 transition w-full font-bold"
+              >
+                Manage Products
+              </Link>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-secondary">
-              <h2 className="text-2xl font-bold text-dark mb-4">Investment Requests</h2>
-              <p className="text-gray-600">You have 0 pending requests from investors.</p>
+              <h2 className="text-2xl font-bold text-dark mb-4">Sales & Orders</h2>
+              <p className="text-gray-600">Track orders for your products.</p>
             </div>
           </div>
         )}
@@ -88,8 +91,18 @@ function Dashboard() {
           </div>
         )}
 
-        {hasRole('user') && !hasRole('business-owner') && !hasRole('investor') && (
-          <div className="bg-white p-8 rounded-lg shadow-lg border-t-4 border-accent text-center max-w-2xl mx-auto">
+        {hasRole('user') && !hasRole('business-owner') && !hasRole('investor') && !localStorage.getItem(`hideUpgradePrompt_${user._id}`) && (
+          <div className="bg-white p-8 rounded-lg shadow-lg border-t-4 border-accent text-center max-w-2xl mx-auto relative">
+            <button
+              onClick={() => {
+                localStorage.setItem(`hideUpgradePrompt_${user._id}`, 'true');
+                window.location.reload();
+              }}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 font-bold"
+              title="Dismiss"
+            >
+              ✕
+            </button>
             <h2 className="text-2xl font-bold text-dark mb-4">Complete Your Profile</h2>
             <p className="text-gray-600 mb-6">
               Enhance your account by adding more roles to access additional features.

@@ -17,6 +17,24 @@ function Navbar() {
           <span>🌾</span> Uddomi Link
         </Link>
         <div className="flex items-center space-x-6">
+          <Link to="/marketplace" className="text-white hover:text-secondary transition font-medium">
+            🛍️ Marketplace
+          </Link>
+          {user && user.roles && user.roles.includes('business-owner') && (
+            <Link to="/my-products" className="text-white hover:text-secondary transition font-medium">
+              📦 My Products
+            </Link>
+          )}
+          {user && (
+            <>
+              <Link to="/cart" className="text-white hover:text-secondary transition font-medium">
+                🛒 Cart
+              </Link>
+              <Link to="/orders" className="text-white hover:text-secondary transition font-medium">
+                📦 Orders
+              </Link>
+            </>
+          )}
           {user ? (
             <>
               {user.roles && user.roles.includes('admin') && (
