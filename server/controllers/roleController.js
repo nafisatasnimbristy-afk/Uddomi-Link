@@ -4,7 +4,7 @@ const addRoleToUser = async (req, res) => {
     try {
         const { role } = req.body;
 
-        const validRoles = ['user', 'business-owner', 'investor'];
+        const validRoles = ['user', 'business-owner', 'ngo'];
         if (!validRoles.includes(role)) {
             return res.status(400).json({ message: 'Invalid role' });
         }

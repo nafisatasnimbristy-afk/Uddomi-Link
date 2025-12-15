@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 
 const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, profileData } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Please add all fields' });
@@ -19,13 +19,24 @@ const registerUser = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // Create user
-  const user = await User.create({
+  // Prepare user data
+  const userData = {
     name,
     email,
     password: hashedPassword,
     roles: role ? [role] : ['user']
-  });
+  };
+
+  // Add profile data if provided
+  if (profileData && (role === 'business-owner' || role === 'ngo')) {
+    userData.profile = {
+      ...profileData,
+      lastUpdated: new Date()
+    };
+  }
+
+  // Create user
+  const user = await User.create(userData);
 
   if (user) {
     res.status(201).json({

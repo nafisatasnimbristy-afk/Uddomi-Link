@@ -32,7 +32,7 @@ const updateUserRole = async (req, res) => {
     try {
         const { role } = req.body;
 
-        const validRoles = ['user', 'business-owner', 'investor', 'admin'];
+        const validRoles = ['user', 'business-owner', 'ngo', 'admin'];
         if (!validRoles.includes(role)) {
             return res.status(400).json({ message: 'Invalid role' });
         }

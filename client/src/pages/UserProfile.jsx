@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import RoleRequestModal from '../components/RoleRequestModal';
 
 function UserProfile() {
     const { userId } = useParams();
     const navigate = useNavigate();
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showRoleModal, setShowRoleModal] = useState(false);
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const isOwnProfile = currentUser && currentUser._id === userId;
+    const isRegularUser = currentUser?.roles?.includes('user') &&
+        !currentUser?.roles?.includes('business-owner') &&
+        !currentUser?.roles?.includes('ngo');
 
     useEffect(() => {
         fetchProfile();
@@ -36,6 +41,28 @@ function UserProfile() {
         }
     };
 
+    const handleRoleRequest = async (role, reason) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/role-requests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${currentUser.token}`
+                },
+                body: JSON.stringify({ requestedRole: role, reason })
+            });
+
+            if (response.ok) {
+                alert('Role request submitted! Admin will review it soon.');
+            } else {
+                const data = await response.json();
+                alert(data.message || 'Error submitting request');
+            }
+        } catch (error) {
+            alert('Error submitting request');
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-light flex items-center justify-center">
@@ -57,6 +84,13 @@ function UserProfile() {
 
     return (
         <div className="min-h-screen bg-light">
+            {/* Role Request Modal */}
+            <RoleRequestModal
+                isOpen={showRoleModal}
+                onClose={() => setShowRoleModal(false)}
+                onSubmit={handleRoleRequest}
+            />
+
             {/* Cover Photo */}
             <div
                 className="h-64 bg-gradient-to-r from-primary to-secondary"
@@ -86,12 +120,22 @@ function UserProfile() {
                                 )}
 
                                 {isOwnProfile && (
-                                    <Link
-                                        to="/profile/edit"
-                                        className="inline-block mt-4 bg-secondary text-dark px-6 py-2 rounded hover:bg-yellow-500 transition font-bold"
-                                    >
-                                        ✏️ Edit Profile
-                                    </Link>
+                                    <div className="mt-4 flex gap-3 justify-center md:justify-start">
+                                        <Link
+                                            to="/profile/edit"
+                                            className="inline-block bg-secondary text-dark px-6 py-2 rounded hover:bg-yellow-500 transition font-bold"
+                                        >
+                                            ✏️ Edit Profile
+                                        </Link>
+                                        {isRegularUser && (
+                                            <button
+                                                onClick={() => setShowRoleModal(true)}
+                                                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded hover:from-purple-700 hover:to-blue-700 transition font-bold"
+                                            >
+                                                ⭐ Upgrade Account
+                                            </button>
+                                        )}
+                                    </div>
                                 )}
                             </div>
 

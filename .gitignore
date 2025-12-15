@@ -1,3 +1,4 @@
 server/createAdmin.js
 server/migrateRoles.js
 server/migrateProducts.js
+server/migrateInvestorToNGO.js

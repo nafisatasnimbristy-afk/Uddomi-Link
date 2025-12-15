@@ -9,7 +9,7 @@ const roleRequestSchema = mongoose.Schema({
     requestedRole: {
         type: String,
         required: true,
-        enum: ['business-owner', 'investor']
+        enum: ['business-owner', 'ngo']
     },
     reason: {
         type: String,

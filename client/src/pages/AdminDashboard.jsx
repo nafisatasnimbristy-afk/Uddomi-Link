@@ -13,7 +13,7 @@ function AdminDashboard() {
         total: 0,
         admins: 0,
         businessOwners: 0,
-        investors: 0,
+        ngos: 0,
         regularUsers: 0
     });
 
@@ -47,7 +47,7 @@ function AdminDashboard() {
                     total: data.length,
                     admins: data.filter(u => u.roles && u.roles.includes('admin')).length,
                     businessOwners: data.filter(u => u.roles && u.roles.includes('business-owner')).length,
-                    investors: data.filter(u => u.roles && u.roles.includes('investor')).length,
+                    ngos: data.filter(u => u.roles && u.roles.includes('ngo')).length,
                     regularUsers: data.filter(u => u.roles && u.roles.includes('user') && u.roles.length === 1).length
                 };
                 setStats(stats);
@@ -302,8 +302,8 @@ function AdminDashboard() {
                                     <p className="text-3xl font-bold text-green-600">{stats.businessOwners}</p>
                                 </div>
                                 <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
-                                    <p className="text-gray-600 text-sm">Investors</p>
-                                    <p className="text-3xl font-bold text-purple-600">{stats.investors}</p>
+                                    <p className="text-gray-600 text-sm">NGOs</p>
+                                    <p className="text-3xl font-bold text-purple-600">{stats.ngos}</p>
                                 </div>
                             </div>
 
@@ -331,7 +331,7 @@ function AdminDashboard() {
                                                                     ? 'bg-red-100 text-red-800'
                                                                     : role === 'business-owner'
                                                                         ? 'bg-green-100 text-green-800'
-                                                                        : role === 'investor'
+                                                                        : role === 'ngo'
                                                                             ? 'bg-purple-100 text-purple-800'
                                                                             : 'bg-gray-100 text-gray-800'
                                                                     }`}

@@ -5,7 +5,7 @@ const createRoleRequest = async (req, res) => {
     try {
         const { requestedRole, reason } = req.body;
 
-        if (!['business-owner', 'investor'].includes(requestedRole)) {
+        if (!['business-owner', 'ngo'].includes(requestedRole)) {
             return res.status(400).json({ message: 'Invalid role requested' });
         }
 
