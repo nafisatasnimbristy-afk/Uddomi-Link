@@ -20,7 +20,7 @@ app.use('/api/seller', require('./routes/sellerAnalyticsRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
-
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 // Database Connection
 const connectDB = async () => {
   try {
