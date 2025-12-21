@@ -47,6 +47,23 @@ const userSchema = mongoose.Schema({
     businessType: String,
     yearsInBusiness: Number,
 
+
+    wishlist: [{
+    itemId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
+    itemType: {
+        type: String,
+        enum: ['product', 'portfolio', 'seller'],
+        required: true
+    },
+    addedAt: {
+        type: Date,
+        default: Date.now
+    }
+}]
+
     // Stats
     profileViews: { type: Number, default: 0 },
     lastUpdated: Date
