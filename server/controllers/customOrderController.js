@@ -1,7 +1,6 @@
 const CustomOrder = require('../models/customOrderModel');
-const { sendNotification } = require('../utils/emailService');
 
-// Create custom order request
+// Create custom order request (NO EMAIL)
 const createCustomOrder = async (req, res) => {
     try {
         const { sellerId, title, description, category, budget, deadline, referenceImages, specifications } = req.body;
@@ -19,27 +18,8 @@ const createCustomOrder = async (req, res) => {
             status: 'pending'
         });
 
-        // Send notification to seller
-        await sendNotification(
-            sellerId,
-            null, // email would be fetched from user model
-            {
-                type: 'custom_order',
-                title: 'New Custom Order Request',
-                message: `You have a new custom order request: ${title}`,
-                relatedId: customOrder._id,
-                relatedModel: 'CustomOrder',
-                actionUrl: `/custom-orders/${customOrder._id}`
-            },
-            {
-                customerName: req.user.name,
-                description,
-                budget,
-                deadline,
-                requestId: customOrder._id
-            }
-        );
-
+        console.log('📝 Custom Order Created:', customOrder._id);
+        
         res.status(201).json(customOrder);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -105,7 +85,7 @@ const getOrderById = async (req, res) => {
     }
 };
 
-// Update order (seller response)
+// Update order (seller response) - NO EMAIL
 const updateOrder = async (req, res) => {
     try {
         const order = await CustomOrder.findById(req.params.id);
@@ -138,30 +118,15 @@ const updateOrder = async (req, res) => {
         }
 
         await order.save();
-
-        // Notify customer
-        if (status === 'quoted' || status === 'accepted' || status === 'rejected') {
-            await sendNotification(
-                order.customer,
-                null,
-                {
-                    type: 'custom_order',
-                    title: `Custom Order ${status.charAt(0).toUpperCase() + status.slice(1)}`,
-                    message: `Your custom order "${order.title}" has been ${status}`,
-                    relatedId: order._id,
-                    relatedModel: 'CustomOrder',
-                    actionUrl: `/custom-orders/${order._id}`
-                }
-            );
-        }
-
+        console.log('✅ Custom Order Updated:', order._id, 'Status:', status);
+        
         res.json(order);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
-// Add message to conversation
+// Add message to conversation - NO EMAIL
 const addMessage = async (req, res) => {
     try {
         const order = await CustomOrder.findById(req.params.id);
@@ -185,25 +150,8 @@ const addMessage = async (req, res) => {
         });
 
         await order.save();
-
-        // Notify the other party
-        const recipientId = req.user._id.toString() === order.customer.toString() 
-            ? order.seller 
-            : order.customer;
-
-        await sendNotification(
-            recipientId,
-            null,
-            {
-                type: 'message',
-                title: 'New Message in Custom Order',
-                message: `New message in your custom order: ${order.title}`,
-                relatedId: order._id,
-                relatedModel: 'CustomOrder',
-                actionUrl: `/custom-orders/${order._id}`
-            }
-        );
-
+        console.log('💬 Message added to order:', order._id);
+        
         res.json(order.conversation);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
