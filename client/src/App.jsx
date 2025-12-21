@@ -15,6 +15,7 @@ import EditProfile from './pages/EditProfile';
 import SellersDirectory from './pages/SellersDirectory';
 import Portfolio from './pages/Portfolio';
 import CustomOrders from './pages/CustomOrders';
+import Wishlist from './pages/Wishlist';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/custom-orders" element={<CustomOrders />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route
             path="/admin"
             element={
