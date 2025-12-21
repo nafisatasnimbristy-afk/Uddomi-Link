@@ -23,6 +23,7 @@ app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/portfolios', require('./routes/portfolioRoutes'));
 app.use('/api/custom-orders', require('./routes/customOrderRoutes'));
+app.use('/api/wishlist', require('./routes/wishlistRoutes'));
 
 // Database Connection
 const connectDB = async () => {
