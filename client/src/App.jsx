@@ -35,7 +35,6 @@ function App() {
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/custom-orders" element={<CustomOrders />} />
-          <Route path="/custom-orders/:id" element={<CustomOrderDetail />} />
           <Route
             path="/admin"
             element={
