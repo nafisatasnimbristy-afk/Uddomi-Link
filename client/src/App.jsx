@@ -14,8 +14,13 @@ import UserProfile from './pages/UserProfile';
 import EditProfile from './pages/EditProfile';
 import SellersDirectory from './pages/SellersDirectory';
 import Portfolio from './pages/Portfolio';
+import MyBookings from './pages/MyBookings';
+import BookingRequests from './pages/BookingRequests';
+
 import CustomOrders from './pages/CustomOrders';
 import Wishlist from './pages/Wishlist';
+
+
 
 function App() {
   return (
@@ -35,6 +40,10 @@ function App() {
           <Route path="/profile/:userId" element={<UserProfile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/my-bookings" element={<MyBookings />} />
+          <Route path="/booking-requests" element={<BookingRequests />} />
+
+
           <Route path="/custom-orders" element={<CustomOrders />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route

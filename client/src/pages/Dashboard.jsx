@@ -102,6 +102,16 @@ function Dashboard() {
           </Link>
 
           <Link
+            to="/my-bookings"
+            className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center border-t-4 border-blue-600"
+          >
+          <div className="text-4xl mb-3">📅</div>
+          <h3 className="text-lg font-bold text-dark">My Bookings</h3>
+          <p className="text-sm text-gray-600 mt-2">View booking requests</p>
+          </Link>
+
+
+          <Link
             to={`/profile/${user._id}`}
             className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition text-center border-t-4 border-purple-600"
           >

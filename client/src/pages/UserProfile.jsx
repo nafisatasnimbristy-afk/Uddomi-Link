@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import RoleRequestModal from '../components/RoleRequestModal';
 import ReportSellerModal from "../components/ReportSellerModal";
+import BookSellerModal from "../components/BookSellerModal";
 
 function UserProfile() {
     const { userId } = useParams();
@@ -14,6 +15,11 @@ function UserProfile() {
     const [reportSubmitting, setReportSubmitting] = useState(false);
     const [reportError, setReportError] = useState("");
     const [reportSuccess, setReportSuccess] = useState("");
+    const [showBookingModal, setShowBookingModal] = useState(false);
+    const [bookingSubmitting, setBookingSubmitting] = useState(false);
+    const [bookingError, setBookingError] = useState("");
+    const [bookingSuccess, setBookingSuccess] = useState("");
+
 
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -144,7 +150,56 @@ function UserProfile() {
             </div>
         );
     }
-    
+    const handleBookingSubmit = async ({ date, timeSlot, note }) => {
+    setBookingSubmitting(true);
+    setBookingError("");
+    setBookingSuccess("");
+
+    try {
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const token = currentUser?.token || currentUser?.accessToken || "";
+
+        if (!token) {
+            setBookingError("You must be logged in to book a seller.");
+            setBookingSubmitting(false);
+            return;
+        }
+
+        if (!viewedUserId) {
+            setBookingError("Seller not loaded yet. Please try again.");
+            setBookingSubmitting(false);
+            return;
+        }
+
+        const res = await fetch(`${API_BASE}/api/bookings`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                providerId: viewedUserId,
+                date,
+                timeSlot,
+                note: note || "",
+            }),
+        });
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || "Failed to create booking");
+        }
+
+        setBookingSuccess("✅ Booking request submitted!");
+        setShowBookingModal(false);
+    } catch (err) {
+        setBookingError(err.message || "Could not submit booking right now.");
+    } finally {
+        setBookingSubmitting(false);
+    }
+};
+
+
     
 
 
@@ -203,6 +258,15 @@ function UserProfile() {
                                         >
                                             ✏️ Edit Profile
                                         </Link>
+                                        {currentUser?.roles?.includes("business-owner") && (
+                                            <Link
+                                                to="/booking-requests"
+                                                className="inline-block bg-primary text-white px-6 py-2 rounded hover:opacity-90 transition font-bold"
+                                            >
+                                                📩 Booking Requests
+                                            </Link>
+                                        )}
+
                                         {isRegularUser && (
                                             <button
                                                 onClick={() => setShowRoleModal(true)}
@@ -390,7 +454,27 @@ function UserProfile() {
                                 >
                                     🚩 Report This Seller
                                 </button>
+
                             </div>
+                        )}
+                        {isLoggedIn && isSellerProfile && !isOwnProfile && (
+                            <div className="bg-white rounded-lg shadow-lg p-6 mt-4">
+                                <h2 className="text-lg font-bold mb-3 text-primary">Book Seller</h2>
+                                <p className="text-sm text-gray-600 mb-4">
+                                    Request a date and time to book this seller/service provider.
+                                </p>
+                                <button
+                                    onClick={() => {
+                                        setBookingError("");
+                                        setBookingSuccess("");
+                                        setShowBookingModal(true);
+                                    }}
+                                    className="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+                                
+                                >
+                                    📅 Book Seller
+                                </button>
+                            </div>    
                         )}
 
                     </div>
@@ -407,6 +491,19 @@ function UserProfile() {
                     {reportSuccess}
                 </div>
             )}
+            
+            {bookingError && (
+                <div className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                    {bookingError}
+                </div>
+            )}
+
+            {bookingSuccess && (
+                <div className="mt-4 rounded-md bg-green-50 p-3 text-sm text-green-700">
+                    {bookingSuccess}
+                </div>
+            )}
+
 
             <ReportSellerModal
                 isOpen={showReportModal}
@@ -414,6 +511,14 @@ function UserProfile() {
                 onSubmit={handleReportSubmit}
                 sellerName={viewedUser?.name || viewedUser?.fullName || viewedUser?.email}
             />
+            
+            <BookSellerModal
+                isOpen={showBookingModal}
+                onClose={() => setShowBookingModal(false)}
+                onSubmit={handleBookingSubmit}
+                sellerName={viewedUser?.name || viewedUser?.fullName || viewedUser?.email}
+            />
+
 
         </div>
     );
